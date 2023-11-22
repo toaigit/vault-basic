@@ -2,7 +2,7 @@
 
 ## Getting started
 
-- [ ] There are 5 scripts in this repo:  vault.login, get.cred, wrap and unwrap
+- [ ] There are 6 scripts in this repo:  vault.login, get.cred, wrap and unwrap
 - [ ] Run ./vault.login first and then ./get.cred
 - [ ] Run ./wrap <password> to wrap the password
 - [ ] Run ./unwrap <wrap-token> to get the password
@@ -13,6 +13,6 @@
 ## Requirements
 
 - [ ] You need to have https connectivity to the world.
-- [ ] You need to have vault, and terraform binary installed on the server.
-- [ ] You may want to install aws cli on the server.
+- [ ] You need to have vault installed on your laptop/desktop.
+- [ ] You also may want to install aws cli on the server.
 
