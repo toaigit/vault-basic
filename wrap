@@ -1,0 +1,41 @@
+#!/bin/bash
+#  Sharing password using vault wrapping feature
+#  You need to have vault and jq installed on the server.
+#  You must login to vault issue the command wrap. No need to login to vault to 
+#      use the unwrap script
+#  Usage: $0 password-to-wrap TTL-in-seconds
+#
+
+if [ $# -ne 2 ] ; then
+   echo "Usage: $0 password-to-wrap TTL-in-seconds"
+   exit 1
+fi
+
+. ./vault.env
+echo "VAULT_ADDR: $VAULT_ADDR"
+
+#  set Time-To-Live is 10 mins 10x60
+export TTL=$2
+
+which vault > /dev/null 2>&1
+# check if vault is installed
+if [ $? -ne 0 ] ; then
+   echo "vault command is NOT installed or NOT in your path"
+   exit 1
+fi
+
+if [ ! -f $HOME/.vault-token ] ; then
+   echo "You have not login to vault."
+   exit 1
+fi
+
+export TOKEN=`cat $HOME/.vault-token`
+export PAYLOAD="{\"Password\":\"$1\"}"
+
+curl -sSL \
+    --header "X-Vault-Token: $TOKEN" \
+    --header "X-Vault-Wrap-TTL: $TTL" \
+    --request POST \
+    --data $PAYLOAD \
+    https://vault.stanford.edu/v1/sys/wrapping/wrap | jq '.wrap_info.token' | sed s/\"//g
+

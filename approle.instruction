@@ -1,0 +1,17 @@
+For CI/CD or scripting, you use the approle to authenticate the vault before you
+can retrieve the secret (password).
+
+1.  Your admin provide you the approle role_id.  you can store this in your script,
+    or your machine image.
+2.  Your pipline will request to get the secret_id.  This secret_id will be pushed to
+    your server from a trusted server.
+3.  You know can login the bault using the role_id and secret_id.
+4.  After login the vault, you can retrieve the password using vault kv get command.
+5.  Note that the secret_id will be invalidated after a certain time.  You need to 
+    login the vault before the secret_id expire.
+
+$ export VAULT_ADDR=https://vault.stanford.edu
+$ vault write auth/approle/login role_id=xxxx secret_id=yyyyy
+$ export VAULT_TOKEN=hvs.CAESIPHSjKroPvAL1a7mWEbmh6Y0NGV2tRTFBLc1ZFeWJuMkNsbkI
+
+$ vault kv get -field=syspassword secret/projects/et-mysqlhosting/dev/db/mysqldev1

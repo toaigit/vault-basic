@@ -1,0 +1,36 @@
+#!/bin/bash
+#  Run this script to get your AWS credential (valid for 8 hours)
+
+if [ $# -ne 1 ] ; then
+   echo "Usage: $0 path"
+   exit 1
+fi
+
+. ./vault.env
+
+echo "VAULT_ADDR: $VAULT_ADDR"
+
+VPATH=$1
+
+LOGFILE=$HOME/cred_$$.log
+: > $LOGFILE
+
+chmod 600 $LOGFILE
+
+echo "Executing vault read $VPATH ..."
+vault read $VPATH | grep _key > $LOGFILE
+AWS_ACCESS_KEY_ID=`cat $LOGFILE | grep access_key | awk '{print $2}'`
+AWS_SECRET_ACCESS_KEY=`cat $LOGFILE | grep secret_key | awk '{print $2}'`
+rm -f $LOGFILE
+
+: > aws.env.tmp
+chmod 700 aws.env.tmp
+
+echo "export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" > aws.env.tmp
+echo "export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY" >> aws.env.tmp
+echo "export AWS_DEFAULT_REGION=us-west-2" >> aws.env.tmp
+
+echo "==============IMPORTANT=================================="
+echo "Please run . ./aws.env.tmp to set up your AWS credential."
+echo "     DONT FORGET TO REMOVE THE FILE aws.env.tmp          "
+echo "==============IMPORTANT=================================="

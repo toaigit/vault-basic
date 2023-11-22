@@ -1,0 +1,23 @@
+#!/bin/bash
+#  Sharing password using vault wrapping feature
+#  NOTE - the user doesn't have to login to vault to use vault unwrap command
+#  Usage: $0 wrap-token
+#
+
+if [ $# -ne 1 ] ; then
+   echo "Usage: $0 wrap-token"
+   exit 1
+fi
+
+. ./vault.env
+echo "VAULT_ADDR: $VAULT_ADDR"
+
+which vault > /dev/null 2>&1
+# check if vault is installed
+if [ $? -ne 0 ] ; then
+   echo "vault command is NOT installed or NOT in your path"
+   exit 1
+fi
+
+export TOKEN=$1
+vault unwrap $TOKEN
