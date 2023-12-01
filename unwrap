@@ -20,4 +20,4 @@ if [ $? -ne 0 ] ; then
 fi
 
 export TOKEN=$1
-vault unwrap $TOKEN
+vault unwrap -format json $TOKEN | jq .data.Password | sed -e 's/"//g'
