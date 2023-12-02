@@ -6,7 +6,7 @@ if [ $# -ne 1 ] ; then
 fi
 
 . ./vault.env
-export ROLE_ID=`cat /root/role_id.txt`
+export ROLE_ID=`cat $HOME/.role_id.txt`
 export WRAPP_SECRET=$1
 export SECRET_ID=`vault unwrap -format json $WRAPP_SECRET | jq .data.Password | sed -e 's/"//g'`
 export VAULT_TOKEN=`vault write -field=token -force auth/approle/login role_id=$ROLE_ID secret_id=$SECRET_ID`
